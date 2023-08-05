@@ -28,14 +28,14 @@
 
 int main(int argc, char **argv) {
     display_t display;
-    display_create(&display, "mandelbrot", 900, 600);
+    display_create(&display, "mandelbrot", 900, 900);
 
     fractal_pipeline_t pipeline;
     fractal_pipeline_create(&pipeline);
 
     while (display_running(&display)) {
         glClear(GL_COLOR_BUFFER_BIT);
-        fractal_pipeline_submit(&pipeline);
+        fractal_pipeline_submit(&pipeline, display.width, display.height);
         display_update_frame(&display);
     }
 

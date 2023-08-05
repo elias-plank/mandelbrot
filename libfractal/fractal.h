@@ -52,7 +52,9 @@ void fractal_pipeline_destroy(fractal_pipeline_t *self);
  * Submit the pipeline state to the gpu
  *
  * @param self pipeline handle
+ * @param width viewport width
+ * @param height viewport height
  */
-void fractal_pipeline_submit(fractal_pipeline_t *self);
+void fractal_pipeline_submit(fractal_pipeline_t *self, u32 width, u32 height);
 
 #endif// LIBFRACTAL_FRACTAL_H
