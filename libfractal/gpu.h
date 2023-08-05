@@ -43,14 +43,14 @@ typedef struct shader {
  * @param fragment path to the fragment shader
  * @return bool
  */
-bool shader_create(shader_t* self, const char* vertex, const char* fragment);
+bool shader_create(shader_t *self, const char *vertex, const char *fragment);
 
 /**
  * Destroys the specified shader
  *
  * @param self shader handle
  */
-void shader_destroy(shader_t* self);
+void shader_destroy(shader_t *self);
 
 /**
  * Sets a sampler2d (texture) uniform
@@ -59,7 +59,7 @@ void shader_destroy(shader_t* self);
  * @param name uniform name
  * @param slot sampler slot for the texture
  */
-void shader_uniform_sampler(shader_t* self, const char* name, u32 slot);
+void shader_uniform_sampler(shader_t *self, const char *name, u32 slot);
 
 /**
  * Sets an integer (s32) uniform
@@ -68,7 +68,7 @@ void shader_uniform_sampler(shader_t* self, const char* name, u32 slot);
  * @param name uniform name
  * @param value value
  */
-void shader_uniform_s32(shader_t* self, const char* name, s32 value);
+void shader_uniform_s32(shader_t *self, const char *name, s32 value);
 
 /**
  * Sets a 2d-integer (s32vec2_t) uniform
@@ -77,7 +77,7 @@ void shader_uniform_s32(shader_t* self, const char* name, s32 value);
  * @param name uniform name
  * @param value value
  */
-void shader_uniform_s32vec2(shader_t* self, const char* name, s32vec2_t* value);
+void shader_uniform_s32vec2(shader_t *self, const char *name, s32vec2_t *value);
 
 /**
  * Sets a 3d-integer (s32vec3_t) uniform
@@ -86,7 +86,7 @@ void shader_uniform_s32vec2(shader_t* self, const char* name, s32vec2_t* value);
  * @param name uniform name
  * @param value value
  */
-void shader_uniform_s32vec3(shader_t* self, const char* name, s32vec3_t* value);
+void shader_uniform_s32vec3(shader_t *self, const char *name, s32vec3_t *value);
 
 /**
  * Sets a 4d-integer (s32vec4_t) uniform
@@ -95,7 +95,7 @@ void shader_uniform_s32vec3(shader_t* self, const char* name, s32vec3_t* value);
  * @param name uniform name
  * @param value value
  */
-void shader_uniform_s32vec4(shader_t* self, const char* name, s32vec4_t* value);
+void shader_uniform_s32vec4(shader_t *self, const char *name, s32vec4_t *value);
 
 /**
  * Sets a float (f32) uniform
@@ -104,7 +104,7 @@ void shader_uniform_s32vec4(shader_t* self, const char* name, s32vec4_t* value);
  * @param name uniform name
  * @param value value
  */
-void shader_uniform_f32(shader_t* self, const char* name, f32 value);
+void shader_uniform_f32(shader_t *self, const char *name, f32 value);
 
 /**
  * Sets a 2d-float (f32vec2_t) uniform
@@ -113,7 +113,7 @@ void shader_uniform_f32(shader_t* self, const char* name, f32 value);
  * @param name uniform name
  * @param value value
  */
-void shader_uniform_f32vec2(shader_t* self, const char* name, f32vec2_t* value);
+void shader_uniform_f32vec2(shader_t *self, const char *name, f32vec2_t *value);
 
 /**
  * Sets a 3d-float (f32vec3_t) uniform
@@ -122,7 +122,7 @@ void shader_uniform_f32vec2(shader_t* self, const char* name, f32vec2_t* value);
  * @param name uniform name
  * @param value value
  */
-void shader_uniform_f32vec3(shader_t* self, const char* name, f32vec3_t* value);
+void shader_uniform_f32vec3(shader_t *self, const char *name, f32vec3_t *value);
 
 /**
  * Sets a 4d-float (f32vec4_t) uniform
@@ -131,7 +131,7 @@ void shader_uniform_f32vec3(shader_t* self, const char* name, f32vec3_t* value);
  * @param name uniform name
  * @param value value
  */
-void shader_uniform_f32vec4(shader_t* self, const char* name, f32vec4_t* value);
+void shader_uniform_f32vec4(shader_t *self, const char *name, f32vec4_t *value);
 
 /**
  * Sets a mat4 (f32mat4_t) uniform
@@ -140,14 +140,14 @@ void shader_uniform_f32vec4(shader_t* self, const char* name, f32vec4_t* value);
  * @param name uniform name
  * @param value value
  */
-void shader_uniform_f32mat4(shader_t* self, const char* name, f32mat4_t* value);
+void shader_uniform_f32mat4(shader_t *self, const char *name, f32mat4_t *value);
 
 /**
  * Binds the specified shader
  *
  * @param self shader handle
  */
-void shader_bind(shader_t* self);
+void shader_bind(shader_t *self);
 
 /**
  * Unbinds the currently bound shader

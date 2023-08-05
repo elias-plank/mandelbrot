@@ -97,11 +97,11 @@ typedef struct f32mat4 {
 } f32mat4_t;
 
 typedef struct vertex {
-    f32vec3_t position;
+    f32vec4_t position;
 } vertex_t;
 
 typedef struct binary_buffer {
-    char* data;
+    char *data;
     u32 size;
 } binary_buffer_t;
 
