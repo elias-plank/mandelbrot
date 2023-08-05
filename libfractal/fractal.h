@@ -53,6 +53,6 @@ void fractal_pipeline_destroy(fractal_pipeline_t *self);
  *
  * @param self pipeline handle
  */
-void fractal_pipeline_submit(fractal_pipeline_t* self);
+void fractal_pipeline_submit(fractal_pipeline_t *self);
 
 #endif// LIBFRACTAL_FRACTAL_H

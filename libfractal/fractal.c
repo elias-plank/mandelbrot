@@ -23,6 +23,7 @@
  */
 
 #include "fractal.h"
+#include "math.h"
 
 // ===================================================================================
 // SHADER SOURCE MACRO HELPERS
@@ -39,11 +40,15 @@
 // ===================================================================================
 
 DEFINE_SHADER(shader_vertex,
-layout(location = 0) in vec3 attrib_position;
-layout(location = 0) out vec3 passed_position;
+layout(location = 0) in vec4 attrib_position;
+layout(location = 0) out vec4 passed_position;
+
+// matrix for transforming fragments into mandelbrot space
+uniform mat4 uniform_projection;
+
 void main() {
-    passed_position = attrib_position;
-    gl_Position = vec4(attrib_position, 1.0);
+    passed_position = inverse(uniform_projection) * attrib_position;
+    gl_Position = attrib_position;
 });
 
 // ===================================================================================
@@ -52,9 +57,50 @@ void main() {
 
 DEFINE_SHADER(shader_fragment,
 layout(location = 0) out vec4 output_color;
-layout(location = 0) in vec3 passed_position;
+layout(location = 0) in vec4 passed_position;
+
+vec4 color(float t) {
+    float r = 9.0 * (1.0 - t) * t * t * t;
+    float g = 15.0 * (1.0 - t) * (1.0 - t) * t * t;
+    float b = 8.5 * (1.0 - t) * (1.0 - t) * (1.0 - t) * t;
+    return vec4(r, g, b, 1.0);
+}
+
+vec4 mandelbrot(vec2 c) {
+    int iteration = 0;
+    int max_iteration = 50;
+
+    vec2 z = vec2(0);
+    for (; iteration < max_iteration; ++iteration) {
+        // z^2 in complex:
+        // -> (x + y*i)^2
+        // -> (x + y*i) * (x + y*i)
+        // -> x^2 + 2 * x * y * i - y^2
+        // real part (x):
+        // -> x^2 - y^2
+        // imaginary part (y):
+        // -> 2 * x * y * i
+        float x = z.x * z.x - z.y * z.y;
+        float y = 2 * z.x * z.y;
+
+        // bounds check
+        if (x * x + y * y > 4) {
+            break;
+        }
+
+        z.x = x + c.x;
+        z.y = y + c.y;
+    }
+
+    if (iteration < max_iteration) {
+        return color(
+        float(iteration) / float(max_iteration));
+    }
+    return vec4(0.0);
+}
+
 void main() {
-    output_color = vec4(passed_position, 1.0);
+    output_color = mandelbrot(passed_position.xy);
 });
 
 // ===================================================================================
@@ -68,7 +114,7 @@ void fractal_pipeline_create(fractal_pipeline_t *self) {
     index_buffer_create(&self->index_buffer);
 
     // We only need the position in the vertex shader
-    static shader_type_t attributes[] = {FLOAT3};
+    static shader_type_t attributes[] = {FLOAT4};
     static vertex_buffer_layout_t layout;
     layout.attributes = attributes;
     layout.count = STACK_ARRAY_SIZE(attributes);
@@ -81,13 +127,13 @@ void fractal_pipeline_create(fractal_pipeline_t *self) {
 
     // Two triangles are the drawing surface of our computation shader
     static vertex_t vertices[] = {
-            {{-1.0f, -1.0f, 0.0f}},
-            {{1.0f,  -1.0f, 0.0f}},
-            {{1.0f,  1.0f,  0.0f}},
-            {{-1.0f, 1.0f,  0.0f}}
+            {{1.0f,  -1.0f, 0.0f, 1.0f}},
+            {{-1.0f, -1.0f, 0.0f, 1.0f}},
+            {{-1.0f, 1.0f,  0.0f, 1.0f}},
+            {{1.0f,  1.0f,  0.0f, 1.0f}}
     };
 
-    static u32 indices[] = {0, 1, 2, 2, 0, 3 };
+    static u32 indices[] = {0, 1, 2, 2, 0, 3};
 
     vertex_buffer_data(&self->vertex_buffer, vertices, sizeof vertices);
     index_buffer_data(&self->index_buffer, indices, STACK_ARRAY_SIZE(indices));
@@ -100,7 +146,11 @@ void fractal_pipeline_destroy(fractal_pipeline_t *self) {
     vertex_array_destroy(&self->vertex_array);
 }
 
-void fractal_pipeline_submit(fractal_pipeline_t* self) {
+void fractal_pipeline_submit(fractal_pipeline_t *self) {
+    f32mat4_t projection;
+    f32mat4_create_orthogonal(&projection, -2.0f, 0.47f, -1.12f, 1.12f);
+    shader_uniform_f32mat4(&self->shader, "uniform_projection", &projection);
+
     shader_bind(&self->shader);
     vertex_array_bind(&self->vertex_array);
     glDrawElements(GL_TRIANGLES, (GLsizei) self->vertex_array.index_buffer->count, GL_UNSIGNED_INT, NULL);

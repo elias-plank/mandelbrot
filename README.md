@@ -15,7 +15,7 @@ The mandelbrot set is defined in the complex plane as the complex numbers $c$ fo
 ## Progress
 
  - [x] GPU hello world (colored rectangle)
- - [ ] First mandelbrot
+ - [x] First mandelbrot
  - [ ] Explorable mandelbrot
  - [ ] Custom color functions
  - [ ] Julia set

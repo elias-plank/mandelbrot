@@ -60,7 +60,7 @@ s32 s32_clamp(s32 n, s32 min, s32 max);
  *
  * @param self matrix handle
  */
-void f32mat4_create_identity(f32mat4_t* self);
+void f32mat4_create_identity(f32mat4_t *self);
 
 
 /**
@@ -72,6 +72,6 @@ void f32mat4_create_identity(f32mat4_t* self);
  * @param bottom bottom coordinate of the orthogonal frustum
  * @param top top coordinate of the orthogonal frustum
  */
-void f32mat4_create_orthogonal(f32mat4_t* self, f32 left, f32 right, f32 bottom, f32 top);
+void f32mat4_create_orthogonal(f32mat4_t *self, f32 left, f32 right, f32 bottom, f32 top);
 
 #endif// #define LIBFRACTAL_MATH_H
