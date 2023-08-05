@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
 #include "fractal.h"
 #include "math.h"
 
@@ -44,10 +45,13 @@ layout(location = 0) in vec4 attrib_position;
 layout(location = 0) out vec4 passed_position;
 
 // matrix for transforming fragments into mandelbrot space
-uniform mat4 uniform_projection;
+uniform mat4 uniform_fractal_scale;
 
 void main() {
-    passed_position = inverse(uniform_projection) * attrib_position;
+    // the inverse of the scale matrix is used,
+    // as we take in normalized coordinates
+    // which we want to transform into the mandelbrot space
+    passed_position = inverse(uniform_fractal_scale) * attrib_position;
     gl_Position = attrib_position;
 });
 
@@ -146,10 +150,12 @@ void fractal_pipeline_destroy(fractal_pipeline_t *self) {
     vertex_array_destroy(&self->vertex_array);
 }
 
-void fractal_pipeline_submit(fractal_pipeline_t *self) {
-    f32mat4_t projection;
-    f32mat4_create_orthogonal(&projection, -2.0f, 0.47f, -1.12f, 1.12f);
-    shader_uniform_f32mat4(&self->shader, "uniform_projection", &projection);
+void fractal_pipeline_submit(fractal_pipeline_t *self, u32 width, u32 height) {
+    // Viewport aspect ratio determines scale of fractal
+    f32 ratio = (f32) width / (f32) height;
+    f32mat4_t scale;
+    f32mat4_create_orthogonal(&scale, -2.0f * ratio, 0.47f * ratio, -1.12f, 1.12f);
+    shader_uniform_f32mat4(&self->shader, "uniform_fractal_scale", &scale);
 
     shader_bind(&self->shader);
     vertex_array_bind(&self->vertex_array);
