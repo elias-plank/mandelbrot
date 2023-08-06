@@ -63,42 +63,24 @@ DEFINE_SHADER(shader_fragment,
 layout(location = 0) out vec4 output_color;
 layout(location = 0) in vec4 passed_position;
 
-vec4 color(float t) {
-    float r = 9.0 * (1.0 - t) * t * t * t;
-    float g = 15.0 * (1.0 - t) * (1.0 - t) * t * t;
-    float b = 8.5 * (1.0 - t) * (1.0 - t) * (1.0 - t) * t;
-    return vec4(r, g, b, 1.0);
-}
-
 vec4 mandelbrot(vec2 c) {
     int iteration = 0;
-    int max_iteration = 50;
-
-    vec2 z = vec2(0);
-    for (; iteration < max_iteration; ++iteration) {
-        // z^2 in complex:
-        // -> (x + y*i)^2
-        // -> (x + y*i) * (x + y*i)
-        // -> x^2 + 2 * x * y * i - y^2
-        // real part (x):
-        // -> x^2 - y^2
-        // imaginary part (y):
-        // -> 2 * x * y * i
+    int max_iterations = 50;
+    for (vec2 z = vec2(0); iteration < max_iterations; ++iteration) {
         float x = z.x * z.x - z.y * z.y;
         float y = 2 * z.x * z.y;
-
-        // bounds check
         if (x * x + y * y > 4) {
             break;
         }
-
         z.x = x + c.x;
         z.y = y + c.y;
     }
-
-    if (iteration < max_iteration) {
-        return color(
-        float(iteration) / float(max_iteration));
+    if (iteration < max_iterations) {
+        float t = float(iteration) / float(max_iterations);
+        float r = 9.0 * (1.0 - t) * t * t * t;
+        float g = 15.0 * (1.0 - t) * (1.0 - t) * t * t;
+        float b = 8.5 * (1.0 - t) * (1.0 - t) * (1.0 - t) * t;
+        return vec4(r, g, b, 1.0);
     }
     return vec4(0.0);
 }
@@ -157,6 +139,7 @@ void fractal_pipeline_submit(fractal_pipeline_t *self, u32 width, u32 height) {
     f32mat4_create_orthogonal(&scale, -2.0f * ratio, 0.47f * ratio, -1.12f, 1.12f);
     shader_uniform_f32mat4(&self->shader, "uniform_fractal_scale", &scale);
 
+    // Output to the gpu
     shader_bind(&self->shader);
     vertex_array_bind(&self->vertex_array);
     glDrawElements(GL_TRIANGLES, (GLsizei) self->vertex_array.index_buffer->count, GL_UNSIGNED_INT, NULL);
